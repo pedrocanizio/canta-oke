@@ -1,0 +1,41 @@
+/* Result Section */
+#result {
+    font-size: 1.2em;
+    text-align: center;
+    margin-top: 20px;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Input Field (Song Code) */
+input[type="text"] {
+    width: 200px;
+    padding: 10px;
+    font-size: 1.2em;
+    text-align: center;
+    border: 2px solid white;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-family: monospace;
+    /* Monospace font for a clean, code-like appearance */
+    letter-spacing: 2px;
+    /* Add spacing between characters for better readability */
+    outline: none;
+    /* Remove default focus outline */
+    transition: all 0.3s ease;
+}
+
+input[type="text"]:focus {
+    border-color: #ffcc00;
+    /* Highlight border on focus */
+    box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+    /* Add a glow effect */
+}
+
+input[type="text"]::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+    /* Lighter placeholder text */
+}

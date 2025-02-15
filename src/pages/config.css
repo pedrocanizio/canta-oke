@@ -1,0 +1,40 @@
+/* Style for the buttons in the config window */
+.config-button {
+    background-color: transparent;
+    border: 1px solid white;
+    color: white;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+}
+
+.config-button:hover {
+    background-color: white;
+    color: #6441A5;
+}
+
+/* Style for the form inputs */
+input[type="number"] {
+    width: 100px;
+    padding: 10px;
+    font-size: 1.2em;
+    text-align: center;
+    border: 2px solid white;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-family: monospace;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+input[type="number"]:focus {
+    border-color: #ffcc00;
+    box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+}
+
+input[type="number"]::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}

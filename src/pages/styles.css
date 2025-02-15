@@ -1,0 +1,133 @@
+/* Global Styles */
+body {
+    background-image: linear-gradient(to bottom right, #6441A5, #2a758b);
+    background-size: cover;
+    background-attachment: fixed;
+    margin: 0px;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    color: white;
+    animation: gradientAnimation 10s ease infinite;
+}
+
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Navigation Bar */
+nav {
+    display: none;
+    /* display: flex; */
+    justify-content: center;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+nav button {
+    background-color: transparent;
+    border: 1px solid white;
+    color: white;
+    padding: 10px 20px;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+nav button:hover {
+    background-color: white;
+    color: #6441A5;
+}
+
+/* Music List Table */
+table {
+    width: 90%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: rgba(0, 0, 0, 0.7);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+table,
+th,
+td {
+    border: 1px solid white;
+}
+
+th,
+td {
+    padding: 10px;
+    text-align: left;
+    color: white;
+}
+
+th {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Heading Styles */
+h1,
+h2 {
+    text-align: center;
+    margin-top: 20px;
+}
+
+h1 {
+    font-size: 2.5em;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+h2 {
+    font-size: 2em;
+}
+
+
+.home {
+    padding-top: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.home>div {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+/* Ensure the image, input, and song list section maintain their size */
+.home img {
+    width: 400px;
+}
+
+.home input[type="text"] {
+    width: 200px;
+}
+
+#selectedSongsList {
+    text-align: center;
+    /* Ensure it has the same width as the input */
+}
+
+video {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    /* Full viewport width */
+    height: 90vh;
+    /* Full viewport height */
+    object-fit: contain;
+    /* Ensures the video covers the area without distortion */
+    object-position: center;
+    /* Centers the video content */
+}

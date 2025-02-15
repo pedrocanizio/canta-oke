@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="config.css">
+</head>
+
+<body>
+    <h1>Configurações</h1>
+    <form id="configForm" style="display: flex; flex-direction: column; gap: 0.5rem; padding: 1rem;">
+        <div>
+            <label for="minScore">Min Score:</label>
+            <input type="number" id="minScore" name="minScore"><br><br>
+        </div>
+        <div>
+
+            <label for="maxScore">Max Score:</label>
+            <input type="number" id="maxScore" name="maxScore"><br><br>
+        </div>
+        <div style="display: flex;justify-content: center;gap: 0.5rem;">
+            <button type="submit" class="config-button">Save</button>
+            <button type="button" id="closeButton" class="config-button">Close</button>
+        </div>
+    </form>
+
+    <script>
+        window.electronAPI.getConfig().then(config => {
+            document.getElementById('minScore').value = config.minScore;
+            document.getElementById('maxScore').value = config.maxScore;
+        });
+
+        document.getElementById('configForm').addEventListener('submit', (event) => {
+            event.preventDefault();
+            const newConfig = {
+                minScore: document.getElementById('minScore').value,
+                maxScore: document.getElementById('maxScore').value
+            };
+            window.electronAPI.setConfig(newConfig).then(() => {
+                alert('Configurações salvas!');
+            });
+        });
+
+        document.getElementById('closeButton').addEventListener('click', () => {
+            window.electronAPI.closeConfigWindow();
+        });
+    </script>
+</body>
+
+</html>

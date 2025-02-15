@@ -1,0 +1,65 @@
+{
+  "name": "cantaoke2",
+  "version": "0.1.0",
+  "description": "This is my Kareoke App",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron .",
+    "start:dev": "cross-env NODE_ENV=development electron .",
+    "build": "electron-builder",
+    "postinstall": "electron-rebuild -f -w sqlite3",
+    "package-win": "electron-packager . --platform=win32 --arch=x64 --out=dist --overwrite --icon=src/assets/icons/canta-oke-logo.ico"
+  },
+  "dependencies": {
+    "ollama": "^0.5.12",
+    "pdfkit": "^0.16.0",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^3.7.1",
+    "cross-env": "^7.0.3",
+    "electron": "^34.0.2",
+    "electron-builder": "^24.3.0",
+    "electron-packager": "^17.1.2",
+    "electron-rebuild": "^3.2.9",
+    "electron-reload": "^2.0.0-alpha.1"
+  },
+  "build": {
+    "appId": "com.example.cantaoke2",
+    "productName": "CantaOke2",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "win": {
+      "icon": "src/assets/icons/canta-oke-logo.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "CantaOke${version}.exe"
+    },
+    "mac": {
+      "icon": "src/assets/icons/canta-oke-logo.icns",
+      "target": "dmg",
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false
+    },
+    "linux": {
+      "icon": "src/assets/icons/canta-oke-logo.png",
+      "target": "AppImage"
+    }
+  }
+}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canta Oke</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to the external CSS -->
+    <link rel="stylesheet" href="index.css"> <!-- Link to the external CSS -->
+</head>
+
+<body>
+    <nav>
+        <button onclick="navigateTo('index')">Home</button>
+        <button onclick="navigateTo('video')">Video</button>
+        <button onclick="navigateTo('score')">Score</button>
+    </nav>
+
+    <div class="home">
+        <div style="display: flex;gap: 2rem; justify-content: center;">
+            <div style="display: flex; flex-direction: column; align-items: center;gap: 0.5rem;">
+                <img src="../assets/image/canta-oke-logo.webp" alt="Canta Oke Logo" class="logo" />
+            </div>
+            <div style="min-width: 350px;max-width:  350px;">
+                <input type="text" id="search" placeholder="Procure por musicas" style="width: 100%;padding: 0.5rem;">
+                <div id="result" style="margin-top: 20px;"></div>
+            </div>
+            <div style="min-width: 40%;max-width: 40%;">
+                <div id="selectedSongsList" style="text-align: center; margin-top: 20px;"></div>
+            </div>
+        </div>
+    </div>
+    <script src="renderer.js"></script>
+    <script src="index.js"></script>
+</body>
+
+</html>
