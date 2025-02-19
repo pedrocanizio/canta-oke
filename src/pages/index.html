@@ -7,6 +7,26 @@
     <title>Canta Oke</title>
     <link rel="stylesheet" href="styles.css"> <!-- Link to the external CSS -->
     <link rel="stylesheet" href="index.css"> <!-- Link to the external CSS -->
+    <style>
+        .add-song-button {
+            background-color: #4CAF50;
+            /* Green */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .add-song-button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 
 <body>
@@ -19,10 +39,16 @@
     <div class="home">
         <div style="display: flex;gap: 2rem; justify-content: center;">
             <div style="display: flex; flex-direction: column; align-items: center;gap: 0.5rem;">
-                <img src="../assets/image/canta-oke-logo.webp" alt="Canta Oke Logo" class="logo" />
+                <img src="../assets/image/canta-oke-logo.webp" alt="Canta Oke Logo" class="logo"
+                    style="border-radius: 36rem;width: 800px;" />
             </div>
             <div style="min-width: 350px;max-width:  350px;">
                 <input type="text" id="search" placeholder="Procure por musicas" style="width: 100%;padding: 0.5rem;">
+                <div style="display: flex; align-items: center; margin-top: 10px;">
+                    <input type="text" id="youtubeLink" placeholder="Adicione um link do YouTube"
+                        style="width: 100%;padding: 0.5rem;">
+                    <button class="add-song-button" onclick="addCurrentSong()">Adicionar</button>
+                </div>
                 <div id="result" style="margin-top: 20px;"></div>
             </div>
             <div style="min-width: 40%;max-width: 40%;">

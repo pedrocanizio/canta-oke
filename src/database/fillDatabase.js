@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { Ollama } = require('ollama');
 const { openDb } = require('./index.js');
+const { cleanText } = require('../utils/textUtils.js');
 
 let ollama = new Ollama({
     url: 'http://localhost:11434'
@@ -20,9 +21,10 @@ async function discoverFileInfo(fileName) {
         }],
     });
     const fileInfoArr = response.message.content.replace(`/n`, '').trimEnd().split(`||`);
+
     const fileInfo = {
-        artist: fileInfoArr[0].replaceAll('(Versão Karaokê)', '').replaceAll('(Karaokê Version)', '').replaceAll('Karaokê', ''),
-        song: fileInfoArr[1].replaceAll('(Versão Karaokê)', '').replaceAll('(Karaokê Version)', '').replaceAll('Karaokê', '')
+        artist: cleanText(fileInfoArr[0]),
+        song: cleanText(fileInfoArr[1])
     };
     return Promise.resolve(fileInfo);
 }
@@ -54,7 +56,7 @@ async function processFilesInFolder(folderPath) {
         }
         identificadorLength += 1;
         const identificador = `${String(identificadorLength).padStart(6, '0')}`;
-        const fileInfo = await discoverFileInfo(file);
+        const fileInfo = await discoverFileInfo(cleanText(file));
         const fileExtension = path.extname(file);
         const newFileName = `${identificador} - ${fileInfo.song.trim()} - ${fileInfo.artist.trim()}${fileExtension}`;
         const oldFilePath = path.join(folderPath, file);

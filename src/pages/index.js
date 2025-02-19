@@ -17,10 +17,20 @@ async function updateSelectedSongsList() {
     }
 
     let songsHTML = '<table><tr><th>Identificador</th><th>Artista</th><th>Nome</th></tr>';
+    let youtubeSongsCount = 0;
+
     selectedSongs.forEach((song) => {
-        songsHTML += `<tr><td>${song.identificador}</td><td>${song.artista}</td><td>${song.nome}</td></tr>`;
+        if (!song.addedYoutubeLink) {
+            songsHTML += `<tr><td>${song.identificador}</td><td>${song.artista}</td><td>${song.nome}</td></tr>`;
+        } else {
+            youtubeSongsCount++;
+        }
     });
     songsHTML += '</table>';
+
+    if (youtubeSongsCount > 0) {
+        songsHTML += `<p>${youtubeSongsCount} músicas do YouTube adicionadas.</p>`;
+    }
 
     selectedSongsListDiv.innerHTML = songsHTML;
 }
@@ -84,18 +94,35 @@ async function searchSong(identificador) {
 
 // Add the current song to the selected songs array
 function addCurrentSong() {
-    if (!currentSong) {
+    const youtubeLink = document.getElementById('youtubeLink').value;
+
+    if (!currentSong && !youtubeLink) {
         alert('Nenhuma Música selecionada.');
         return;
     }
 
-    window.electronAPI.addSong(currentSong);
+    let song = {};
+    if (youtubeLink) {
+        song = {
+            identificador: document.getElementById('search').value,
+            caminho: youtubeLink,
+            addedYoutubeLink: true
+        };
+    } else {
+        song = {
+            ...currentSong,
+            addedYoutubeLink: false
+        };
+    }
+
+    window.electronAPI.addSong(song);
     updateSelectedSongsList();
 
-    // Clear the input field and reset the current song
+    // Clear the input fields and reset the current song
     const inputElement = document.getElementById('search');
     inputElement.removeEventListener('input', handleInput);
     inputElement.value = '';
+    document.getElementById('youtubeLink').value = '';
     currentSong = null; // Reset the current song
     document.getElementById('result').innerHTML = ''; // Clear the result div
     inputElement.addEventListener('input', handleInput);
@@ -142,7 +169,8 @@ function handleKeydown(event) {
             clearSelectedSongs();
             break;
         case 'Enter':
-            if (currentSong) {
+            const youtubeLink = document.getElementById('youtubeLink').value;
+            if (currentSong || youtubeLink) {
                 addCurrentSong();
             }
             navigateTo('video');

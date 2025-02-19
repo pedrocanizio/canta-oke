@@ -13,7 +13,7 @@ async function generatePDF() {
     doc.fontSize(18).text('Lista de Musicas', { align: 'center' });
 
     const table = {
-        headers: ['Identificador', 'Artista', 'Musica'],
+        headers: ['Código', 'Artista', 'Música'],
         pages: {
             page1: []
         }

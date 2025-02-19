@@ -1,14 +1,19 @@
 /* Global Styles */
 body {
-    background-image: linear-gradient(to bottom right, #6441A5, #2a758b);
+    background-image: linear-gradient(to bottom right, #452155, #452155);
+    /* background-image: url("../assets/image/canta-oke-logo.webp"); */
     background-size: cover;
     background-attachment: fixed;
     margin: 0px;
     overflow: hidden;
     font-family: Arial, sans-serif;
     color: white;
-    animation: gradientAnimation 10s ease infinite;
+    /* animation: gradientAnimation 10s ease infinite; */
+    /* background: linear-gradient(25deg, #FF0080, #9B00FF);
+    background-size: 300% 300%; */
+    /* animation: gradientAnimation 10s ease infinite; */
 }
+
 
 @keyframes gradientAnimation {
     0% {

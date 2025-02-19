@@ -30,6 +30,8 @@ function createWindow() {
     mainWindow = new BrowserWindow({
         width: 1792,
         height: 1024,
+        fullscreen: true,  // Enables fullscreen mode
+        frame: false,      // Removes the upper bar (title bar)
         icon: path.join(__dirname, 'assets/icons/canta-oke-logo.ico'), // Set the window icon
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
@@ -148,7 +150,10 @@ ipcMain.handle('get-selected-songs', () => {
 });
 
 ipcMain.handle('add-song', (event, song) => {
-    selectedSongs.push(song);
+    selectedSongs.push({
+        ...song,
+        addedYoutubeLink: song.addedYoutubeLink || false
+    });
 });
 
 ipcMain.handle('remove-first-song', () => {
