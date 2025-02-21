@@ -98,9 +98,7 @@ h2 {
 
 .home {
     padding-top: 1rem;
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
+    width: 100vw;
 }
 
 .home>div {
@@ -129,7 +127,7 @@ video {
     left: 0;
     width: 100vw;
     /* Full viewport width */
-    height: 90vh;
+    /* height: 90vh; */
     /* Full viewport height */
     object-fit: contain;
     /* Ensures the video covers the area without distortion */

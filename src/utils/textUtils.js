@@ -5,7 +5,8 @@ function capitalizeWords(text) {
     });
 }
 
-function cleanText(text) {
+function cleanText(textC) {
+    let text = textC ? textC : '';
     return capitalizeWords(text.replaceAll('(Versão Karaokê)', '')
         .replaceAll('(Karaokê Version)', '')
         .replaceAll('Karaokê', '')
