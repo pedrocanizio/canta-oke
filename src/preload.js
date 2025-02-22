@@ -2,6 +2,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
     navigateTo: (page) => ipcRenderer.send('navigate-to', page),
+    closeApp: () => ipcRenderer.invoke('close-app'),
     searchSong: (identificador) => ipcRenderer.invoke('search-song', identificador),
     getSelectedSongs: () => ipcRenderer.invoke('get-selected-songs'),
     addSong: (song) => ipcRenderer.invoke('add-song', song),

@@ -29,3 +29,6 @@ document.getElementById('configForm').addEventListener('submit', (event) => {
         closeConfigModal();
     });
 });
+function closeApp() {
+    window.electronAPI.closeApp();
+}

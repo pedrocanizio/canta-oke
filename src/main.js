@@ -211,6 +211,11 @@ ipcMain.handle('update-song', async (event, id, column, value) => {
     });
 });
 
+// Handle closing the application
+ipcMain.handle('close-app', () => {
+    app.quit();
+});
+
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit();
