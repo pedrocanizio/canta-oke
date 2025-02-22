@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing Page</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="landing.css">
+</head>
+
+<body>
+    <div class="menu">
+        <button onclick="navigateTo('index')">Karaoke</button>
+        <button onclick="openConfigModal()">Configurações</button>
+        <button onclick="downloadPDF()">Baixar Lista</button>
+        <button onclick="navigateTo('edit')">Editar Dados</button>
+    </div>
+
+    <!-- Modal Structure -->
+    <div id="configModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeConfigModal()">&times;</span>
+            <h1>Configurações</h1>
+            <form id="configForm">
+                <div>
+                    <label for="minScore">Min Score:</label>
+                    <input type="number" id="minScore" name="minScore">
+                </div>
+                <div>
+                    <label for="maxScore">Max Score:</label>
+                    <input type="number" id="maxScore" name="maxScore">
+                </div>
+                <div style="display: flex; justify-content: center; gap: 0.5rem;">
+                    <button type="submit" class="config-button">Save</button>
+                    <button type="button" id="closeButton" class="config-button"
+                        onclick="closeConfigModal()">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+    <script src="landing.js"></script>
+</body>
+
+</html>

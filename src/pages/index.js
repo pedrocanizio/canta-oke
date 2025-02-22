@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const inputElement = document.getElementById('search');
     inputElement.addEventListener('input', handleInput);
     document.addEventListener('keydown', handleKeydown);
+    document.getElementById('search').focus();
 });
 
 async function updateSelectedSongsList() {

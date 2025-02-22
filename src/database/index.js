@@ -17,7 +17,8 @@ db.serialize(() => {
             identificador TEXT,
             artista TEXT,
             nome TEXT,
-            caminho TEXT
+            caminho TEXT,
+            caminhoOriginal TEXT
         )
     `);
 
@@ -26,7 +27,7 @@ db.serialize(() => {
     //     if (err) throw err;
 
     //     if (row.count === 0) {
-    //         const stmt = db.prepare("INSERT INTO Musicas (identificador, artista, nome, caminho) VALUES (?, ?, ?, ?)");
+    //         const stmt = db.prepare("INSERT INTO Musicas (identificador, artista, nome, caminho) VALUES (?, ?, ?, ?)";
 
     //         const sampleData = [
     //             ["000001", "Artist X", "Song A", "000001 - Evidências - Chitãozinho and Xororó.mp4"],

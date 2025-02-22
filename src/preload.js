@@ -10,5 +10,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     clearSelectedSongs: () => ipcRenderer.invoke('clear-selected-songs'),
     getConfig: () => ipcRenderer.invoke('get-config'),
     setConfig: (newConfig) => ipcRenderer.invoke('set-config', newConfig),
-    closeConfigWindow: () => ipcRenderer.send('close-config-window')
+    closeConfigWindow: () => ipcRenderer.send('close-config-window'),
+    generatePDF: () => ipcRenderer.invoke('generate-pdf'),
+    getAllSongs: () => ipcRenderer.invoke('get-all-songs'),
+    updateSong: (id, column, value) => ipcRenderer.invoke('update-song', id, column, value)
 });

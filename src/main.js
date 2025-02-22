@@ -40,7 +40,7 @@ function createWindow() {
         },
     });
 
-    mainWindow.loadFile('src/pages/index.html');
+    mainWindow.loadFile('src/pages/landing.html'); // Load the landing page
     if (process.env.NODE_ENV === 'development') mainWindow.webContents.openDevTools(); // Uncomment to open DevTools
 
     mainWindow.on('close', () => {
@@ -70,15 +70,6 @@ function createConfigWindow() {
 
 app.whenReady().then(() => {
     createWindow();
-
-    // Create the tray icon
-    // tray = new Tray(path.join(__dirname, 'assets/icons/canta-oke-logo.png'));
-    // const contextMenu = Menu.buildFromTemplate([
-    //     { label: 'Show App', click: () => { mainWindow.show(); } },
-    //     { label: 'Quit', click: () => { app.quit(); } }
-    // ]);
-    // tray.setToolTip('Canta Oke');
-    // tray.setContextMenu(contextMenu);
 
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
@@ -124,6 +115,9 @@ ipcMain.on('navigate-to', (event, page) => {
             break;
         case 'score':
             filePath = 'src/pages/score.html';
+            break;
+        case 'edit':
+            filePath = 'src/pages/edit.html';
             break;
         default:
             filePath = 'src/pages/index.html';
@@ -185,6 +179,36 @@ ipcMain.handle('get-config', () => {
 
 ipcMain.handle('set-config', (event, newConfig) => {
     fs.writeFileSync(configPath, JSON.stringify(newConfig));
+});
+
+ipcMain.handle('generate-pdf', async () => {
+    await generatePDF();
+});
+
+// Handle getting all songs
+ipcMain.handle('get-all-songs', async () => {
+    return new Promise((resolve, reject) => {
+        db.all("SELECT * FROM Musicas", (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+});
+
+// Handle updating a song
+ipcMain.handle('update-song', async (event, id, column, value) => {
+    return new Promise((resolve, reject) => {
+        db.run(`UPDATE Musicas SET ${column} = ? WHERE id = ?`, [value, id], (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
 });
 
 app.on('window-all-closed', () => {

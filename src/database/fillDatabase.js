@@ -74,8 +74,8 @@ async function processFilesInFolder(folderPath) {
         const row = await db.get(`SELECT 1 FROM Musicas WHERE identificador = ?`, [identificador])
         console.log(row)
         if (row) {
-            db.run(`UPDATE Musicas SET nome = ?, artista = ?, caminho = ? WHERE identificador = ?`,
-                [fileInfo.song.trim(), fileInfo.artist.trim(), newFileName, identificador],
+            db.run(`UPDATE Musicas SET nome = ?, artista = ?, caminho = ?, caminhoOriginal = ? WHERE identificador = ?`,
+                [fileInfo.song.trim(), fileInfo.artist.trim(), newFileName, file, identificador],
                 (err) => {
                     if (err) {
                         console.error('Error updating database:', err.message);
@@ -84,8 +84,8 @@ async function processFilesInFolder(folderPath) {
                     }
                 });
         } else {
-            db.run(`INSERT INTO Musicas (identificador, nome, artista, caminho) VALUES (?, ?, ?, ?)`,
-                [identificador, fileInfo.song.trim(), fileInfo.artist.trim(), newFileName],
+            db.run(`INSERT INTO Musicas (identificador, nome, artista, caminho, caminhoOriginal) VALUES (?, ?, ?, ?, ?)`,
+                [identificador, fileInfo.song.trim(), fileInfo.artist.trim(), newFileName, file],
                 (err) => {
                     if (err) {
                         console.error('Error inserting into database:', err.message);
