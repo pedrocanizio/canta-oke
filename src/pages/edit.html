@@ -10,6 +10,9 @@
 </head>
 
 <body>
+    <div>
+        <button onclick="navigateTo('landing')" class="back-button">Voltar</button>
+    </div>
     <h1>Editar Dados</h1>
     <div id="tableContainer">
         <table id="editTable">
@@ -31,6 +34,11 @@
 
     <script src="renderer.js"></script>
     <script src="edit.js"></script>
+    <script>
+        function navigateTo(page) {
+            window.electronAPI.navigateTo(page);
+        }
+    </script>
 </body>
 
 </html>

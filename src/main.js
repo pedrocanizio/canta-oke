@@ -119,6 +119,9 @@ ipcMain.on('navigate-to', (event, page) => {
         case 'edit':
             filePath = 'src/pages/edit.html';
             break;
+        case 'landing':
+            filePath = 'src/pages/landing.html';
+            break;
         default:
             filePath = 'src/pages/index.html';
             break;

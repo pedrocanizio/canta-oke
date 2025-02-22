@@ -176,6 +176,9 @@ function handleKeydown(event) {
             }
             navigateTo('video');
             break;
+        case 'v':
+            navigateTo('landing');
+            break;
         default:
             break;
     }
