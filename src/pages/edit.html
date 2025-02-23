@@ -14,10 +14,14 @@
         <button onclick="navigateTo('landing')" class="back-button">Voltar</button>
     </div>
     <h1>Editar Dados</h1>
+    <div>
+        <input type="text" id="searchInput" placeholder="Pesquisar por Identificador" oninput="filterTable()">
+    </div>
     <div id="tableContainer">
         <table id="editTable">
             <thead>
                 <tr>
+                    <th>Ações</th>
                     <th>ID</th>
                     <th>Identificador</th>
                     <th>Artista</th>
@@ -37,6 +41,19 @@
     <script>
         function navigateTo(page) {
             window.electronAPI.navigateTo(page);
+        }
+
+        function filterTable() {
+            const searchValue = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#editTable tbody tr');
+            rows.forEach(row => {
+                const identificador = row.querySelector('td:nth-child(3) input').value.toLowerCase();
+                if (identificador.includes(searchValue)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
         }
     </script>
 </body>

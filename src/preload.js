@@ -14,5 +14,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
     closeConfigWindow: () => ipcRenderer.send('close-config-window'),
     generatePDF: () => ipcRenderer.invoke('generate-pdf'),
     getAllSongs: () => ipcRenderer.invoke('get-all-songs'),
-    updateSong: (id, column, value) => ipcRenderer.invoke('update-song', id, column, value)
+    updateSong: (id, column, value) => ipcRenderer.invoke('update-song', id, column, value),
+    deleteSong: (id, filePath) => ipcRenderer.invoke('delete-song', id, filePath) // Add deleteSong method
 });

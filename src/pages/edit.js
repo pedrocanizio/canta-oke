@@ -4,6 +4,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     songs.forEach(song => {
         const row = document.createElement('tr');
 
+        // Add delete button
+        const deleteCell = document.createElement('td');
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Excluir';
+        deleteButton.addEventListener('click', () => deleteSong(song.id, song.caminho));
+        deleteCell.appendChild(deleteButton);
+        row.appendChild(deleteCell);
+
         Object.keys(song).forEach(key => {
             const cell = document.createElement('td');
             if (key === 'id') {
@@ -38,4 +46,9 @@ async function handleInputChange(event) {
     setTimeout(() => {
         input.classList.remove('updated');
     }, 1000);
+}
+
+async function deleteSong(id, filePath) {
+    await window.electronAPI.deleteSong(id, filePath);
+    location.reload(); // Reload the page to update the table
 }

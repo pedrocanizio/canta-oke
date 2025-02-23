@@ -214,6 +214,25 @@ ipcMain.handle('update-song', async (event, id, column, value) => {
     });
 });
 
+// Handle deleting a song
+ipcMain.handle('delete-song', async (event, id, filePath) => {
+    return new Promise((resolve, reject) => {
+        db.run(`DELETE FROM Musicas WHERE id = ?`, [id], (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                fs.unlink(path.join(__dirname, 'assets', 'musicas', filePath), (err) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve();
+                    }
+                });
+            }
+        });
+    });
+});
+
 // Handle closing the application
 ipcMain.handle('close-app', () => {
     app.quit();
