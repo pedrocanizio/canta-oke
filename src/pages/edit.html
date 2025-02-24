@@ -48,7 +48,9 @@
             const rows = document.querySelectorAll('#editTable tbody tr');
             rows.forEach(row => {
                 const identificador = row.querySelector('td:nth-child(3) input').value.toLowerCase();
-                if (identificador.includes(searchValue)) {
+                const artista = row.querySelector('td:nth-child(4) input').value.toLowerCase();
+                const nome = row.querySelector('td:nth-child(5) input').value.toLowerCase();
+                if (identificador.includes(searchValue) || artista.includes(searchValue) || nome.includes(searchValue)) {
                     row.style.display = '';
                 } else {
                     row.style.display = 'none';
