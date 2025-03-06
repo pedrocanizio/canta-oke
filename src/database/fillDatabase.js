@@ -30,6 +30,9 @@ async function discoverFileInfo(fileName) {
 }
 
 async function processFilesInFolder(folderPath) {
+    const models = await ollama.list();
+    console.log(models);
+
     const files = await fs.promises.readdir(folderPath);
     let identificadorLength = 0;
 
@@ -56,7 +59,14 @@ async function processFilesInFolder(folderPath) {
         }
         identificadorLength += 1;
         const identificador = `${String(identificadorLength).padStart(6, '0')}`;
-        const fileInfo = await discoverFileInfo(cleanText(file));
+        let fileInfo = await discoverFileInfo(cleanText(file));
+
+        if(!fileInfo){
+            console.error(`stopping loop because fileInfo was null`)
+            db.close();
+            break;
+        }
+
         const fileExtension = path.extname(file);
         const newFileName = `${identificador} - ${fileInfo.song.trim()} - ${fileInfo.artist.trim()}${fileExtension}`;
         const oldFilePath = path.join(folderPath, file);

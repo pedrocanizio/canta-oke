@@ -53,7 +53,8 @@ function onYouTubeIframeAPIReady() {
     }
 
     document.addEventListener('keydown', async (event) => {
-        switch (event.key) {
+        const key = event.key.toLowerCase();
+        switch (key) {
             case 'p': // Remove the first song and load the next one
                 await window.electronAPI.removeFirstSong();
                 loadNextSong();
@@ -74,7 +75,6 @@ function onYouTubeIframeAPIReady() {
             case 'v': // Remove the first song and navigate to the score page
                 navigateTo('index');
                 break;
-
             default:
                 break;
         }

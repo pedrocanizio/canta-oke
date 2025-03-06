@@ -154,7 +154,8 @@ function handleInput(event) {
 
 // Handle keydown event
 function handleKeydown(event) {
-    switch (event.key) {
+    const key = event.key.toLowerCase();
+    switch (key) {
         case 'a':
             if (currentSong) {
                 addCurrentSong();
@@ -169,14 +170,14 @@ function handleKeydown(event) {
         case 'l':
             clearSelectedSongs();
             break;
-        case 'Enter':
+        case 'enter':
             const youtubeLink = document.getElementById('youtubeLink').value;
             if (currentSong || youtubeLink) {
                 addCurrentSong();
             }
             navigateTo('video');
             break;
-        case 'v':
+        case 'h':
             navigateTo('landing');
             break;
         default:

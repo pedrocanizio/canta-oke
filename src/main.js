@@ -17,8 +17,8 @@ if (process.env.NODE_ENV === 'development') {
     electronReload(__dirname, {
         electron: require(`${__dirname}/../node_modules/electron`)
     });
-    const folderPath = path.join(__dirname, 'assets', 'musicas');
-    processFilesInFolder(folderPath);
+    // const folderPath = path.join(__dirname, 'assets', 'musicas');
+    // processFilesInFolder(folderPath);
 }
 
 let mainWindow;
