@@ -11,13 +11,14 @@
     "start": "electron .",
     "start:dev": "cross-env NODE_ENV=development electron .",
     "populate-db": "node src/populateDb.js",
-    "build": "electron-builder",
-    "postinstall": "electron-rebuild -f -w sqlite3",
     "package-win": "electron-packager . --platform=win32 --arch=x64 --out=dist --overwrite --icon=src/assets/icons/canta-oke-logo.ico"
   },
   "dependencies": {
+    "express": "^4.21.2",
     "ollama": "^0.5.12",
     "pdfkit": "^0.16.0",
+    "qrcode": "^1.5.4",
+    "qrcodejs": "^1.0.0",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7"
   },
@@ -25,7 +26,7 @@
     "@electron/rebuild": "^3.7.1",
     "cross-env": "^7.0.3",
     "electron": "^34.0.2",
-    "electron-builder": "^24.3.0",
+    "electron-builder": "^24.13.3",
     "electron-packager": "^17.1.2",
     "electron-rebuild": "^3.2.9",
     "electron-reload": "^2.0.0-alpha.1"

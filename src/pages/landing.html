@@ -15,6 +15,7 @@
         <button onclick="openConfigModal()">Configurações</button>
         <button onclick="downloadPDF()">Baixar Lista</button>
         <button onclick="navigateTo('edit')">Editar Dados</button>
+        <button onclick="openQRCodeModal()">QR Code</button> <!-- New button for QR Code -->
         <button onclick="closeApp()">Fechar Programa</button> <!-- Novo botão para fechar o programa -->
     </div>
 
@@ -38,6 +39,15 @@
                         onclick="closeConfigModal()">Close</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- QR Code Modal Structure -->
+    <div id="qrCodeModal" class="modal">
+        <div class="modal-content" style="background-color: #333; color: #fff; border-radius: 10px; padding: 20px;">
+            <span class="close" onclick="closeQRCodeModal()">&times;</span>
+            <h1 style="text-align: center;">QR Code</h1>
+            <div id="qrCodeContainer" style="display: flex; justify-content: center; align-items: center; height: 200px;"></div>
         </div>
     </div>
 

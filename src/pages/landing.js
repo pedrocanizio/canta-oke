@@ -29,6 +29,22 @@ document.getElementById('configForm').addEventListener('submit', (event) => {
         closeConfigModal();
     });
 });
+
 function closeApp() {
     window.electronAPI.closeApp();
+}
+
+function openQRCodeModal() {
+    document.getElementById('qrCodeModal').style.display = 'block';
+    window.electronAPI.generateQRCode().then(qrCodeDataURL => {
+        const qrCodeContainer = document.getElementById('qrCodeContainer');
+        qrCodeContainer.innerHTML = ''; // Clear any existing QR code
+        const img = document.createElement('img');
+        img.src = qrCodeDataURL;
+        qrCodeContainer.appendChild(img);
+    });
+}
+
+function closeQRCodeModal() {
+    document.getElementById('qrCodeModal').style.display = 'none';
 }

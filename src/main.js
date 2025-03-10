@@ -1,9 +1,11 @@
 const { app, BrowserWindow, ipcMain, Menu, Tray } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const QRCode = require('qrcode'); // Import the QRCode library
 const { db } = require('./database/index'); // Import the database logic
 const { processFilesInFolder } = require('./database/fillDatabase');
 const { generatePDF } = require('./generatePDF'); // Import the generatePDF function
+const { startServer } = require('./expressServer'); // Import the startServer function
 
 const configPath = path.join(app.getPath('userData'), 'config.json');
 
@@ -70,10 +72,24 @@ function createConfigWindow() {
 
 app.whenReady().then(() => {
     createWindow();
+    const serverURL = startServer(); // Start the server and get the URL
 
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
             createWindow();
+        }
+    });
+
+    ipcMain.handle('get-server-url', () => serverURL); // Expose the server URL to the renderer process
+
+    ipcMain.handle('generate-qr-code', async () => {
+        try {
+            const qrCodeURL = `${serverURL}/songs`;
+            const qrCodeDataURL = await QRCode.toDataURL(qrCodeURL);
+            return qrCodeDataURL;
+        } catch (error) {
+            console.error('Error generating QR code:', error);
+            throw error;
         }
     });
 });
