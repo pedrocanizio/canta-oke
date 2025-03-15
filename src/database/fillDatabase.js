@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { Ollama } = require('ollama');
 const { openDb } = require('./index.js');
+const { cleanText } = require('../utils/textUtils.js');
 
 let ollama = new Ollama({
     url: 'http://localhost:11434'
@@ -20,14 +21,18 @@ async function discoverFileInfo(fileName) {
         }],
     });
     const fileInfoArr = response.message.content.replace(`/n`, '').trimEnd().split(`||`);
+
     const fileInfo = {
-        artist: fileInfoArr[0].replaceAll('(Versão Karaokê)', '').replaceAll('(Karaokê Version)', '').replaceAll('Karaokê', ''),
-        song: fileInfoArr[1].replaceAll('(Versão Karaokê)', '').replaceAll('(Karaokê Version)', '').replaceAll('Karaokê', '')
+        artist: cleanText(fileInfoArr[0]),
+        song: cleanText(fileInfoArr[1])
     };
     return Promise.resolve(fileInfo);
 }
 
 async function processFilesInFolder(folderPath) {
+    const models = await ollama.list();
+    console.log(models);
+
     const files = await fs.promises.readdir(folderPath);
     let identificadorLength = 0;
 
@@ -54,7 +59,14 @@ async function processFilesInFolder(folderPath) {
         }
         identificadorLength += 1;
         const identificador = `${String(identificadorLength).padStart(6, '0')}`;
-        const fileInfo = await discoverFileInfo(file);
+        let fileInfo = await discoverFileInfo(cleanText(file));
+
+        if(!fileInfo){
+            console.error(`stopping loop because fileInfo was null`)
+            db.close();
+            break;
+        }
+
         const fileExtension = path.extname(file);
         const newFileName = `${identificador} - ${fileInfo.song.trim()} - ${fileInfo.artist.trim()}${fileExtension}`;
         const oldFilePath = path.join(folderPath, file);
@@ -72,8 +84,8 @@ async function processFilesInFolder(folderPath) {
         const row = await db.get(`SELECT 1 FROM Musicas WHERE identificador = ?`, [identificador])
         console.log(row)
         if (row) {
-            db.run(`UPDATE Musicas SET nome = ?, artista = ?, caminho = ? WHERE identificador = ?`,
-                [fileInfo.song.trim(), fileInfo.artist.trim(), newFileName, identificador],
+            db.run(`UPDATE Musicas SET nome = ?, artista = ?, caminho = ?, caminhoOriginal = ? WHERE identificador = ?`,
+                [fileInfo.song.trim(), fileInfo.artist.trim(), newFileName, file, identificador],
                 (err) => {
                     if (err) {
                         console.error('Error updating database:', err.message);
@@ -82,8 +94,8 @@ async function processFilesInFolder(folderPath) {
                     }
                 });
         } else {
-            db.run(`INSERT INTO Musicas (identificador, nome, artista, caminho) VALUES (?, ?, ?, ?)`,
-                [identificador, fileInfo.song.trim(), fileInfo.artist.trim(), newFileName],
+            db.run(`INSERT INTO Musicas (identificador, nome, artista, caminho, caminhoOriginal) VALUES (?, ?, ?, ?, ?)`,
+                [identificador, fileInfo.song.trim(), fileInfo.artist.trim(), newFileName, file],
                 (err) => {
                     if (err) {
                         console.error('Error inserting into database:', err.message);

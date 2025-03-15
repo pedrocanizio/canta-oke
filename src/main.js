@@ -1,9 +1,11 @@
 const { app, BrowserWindow, ipcMain, Menu, Tray } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const QRCode = require('qrcode'); // Import the QRCode library
 const { db } = require('./database/index'); // Import the database logic
 const { processFilesInFolder } = require('./database/fillDatabase');
 const { generatePDF } = require('./generatePDF'); // Import the generatePDF function
+const { startServer } = require('./expressServer'); // Import the startServer function
 
 const configPath = path.join(app.getPath('userData'), 'config.json');
 
@@ -17,8 +19,8 @@ if (process.env.NODE_ENV === 'development') {
     electronReload(__dirname, {
         electron: require(`${__dirname}/../node_modules/electron`)
     });
-    const folderPath = path.join(__dirname, 'assets', 'musicas');
-    processFilesInFolder(folderPath);
+    // const folderPath = path.join(__dirname, 'assets', 'musicas');
+    // processFilesInFolder(folderPath);
 }
 
 let mainWindow;
@@ -30,6 +32,8 @@ function createWindow() {
     mainWindow = new BrowserWindow({
         width: 1792,
         height: 1024,
+        fullscreen: true,  // Enables fullscreen mode
+        frame: false,      // Removes the upper bar (title bar)
         icon: path.join(__dirname, 'assets/icons/canta-oke-logo.ico'), // Set the window icon
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
@@ -38,7 +42,7 @@ function createWindow() {
         },
     });
 
-    mainWindow.loadFile('src/pages/index.html');
+    mainWindow.loadFile('src/pages/landing.html'); // Load the landing page
     if (process.env.NODE_ENV === 'development') mainWindow.webContents.openDevTools(); // Uncomment to open DevTools
 
     mainWindow.on('close', () => {
@@ -68,19 +72,24 @@ function createConfigWindow() {
 
 app.whenReady().then(() => {
     createWindow();
-
-    // Create the tray icon
-    // tray = new Tray(path.join(__dirname, 'assets/icons/canta-oke-logo.png'));
-    // const contextMenu = Menu.buildFromTemplate([
-    //     { label: 'Show App', click: () => { mainWindow.show(); } },
-    //     { label: 'Quit', click: () => { app.quit(); } }
-    // ]);
-    // tray.setToolTip('Canta Oke');
-    // tray.setContextMenu(contextMenu);
+    const serverURL = startServer(); // Start the server and get the URL
 
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
             createWindow();
+        }
+    });
+
+    ipcMain.handle('get-server-url', () => serverURL); // Expose the server URL to the renderer process
+
+    ipcMain.handle('generate-qr-code', async () => {
+        try {
+            const qrCodeURL = `${serverURL}/songs`;
+            const qrCodeDataURL = await QRCode.toDataURL(qrCodeURL);
+            return qrCodeDataURL;
+        } catch (error) {
+            console.error('Error generating QR code:', error);
+            throw error;
         }
     });
 });
@@ -123,6 +132,12 @@ ipcMain.on('navigate-to', (event, page) => {
         case 'score':
             filePath = 'src/pages/score.html';
             break;
+        case 'edit':
+            filePath = 'src/pages/edit.html';
+            break;
+        case 'landing':
+            filePath = 'src/pages/landing.html';
+            break;
         default:
             filePath = 'src/pages/index.html';
             break;
@@ -148,7 +163,10 @@ ipcMain.handle('get-selected-songs', () => {
 });
 
 ipcMain.handle('add-song', (event, song) => {
-    selectedSongs.push(song);
+    selectedSongs.push({
+        ...song,
+        addedYoutubeLink: song.addedYoutubeLink || false
+    });
 });
 
 ipcMain.handle('remove-first-song', () => {
@@ -180,6 +198,60 @@ ipcMain.handle('get-config', () => {
 
 ipcMain.handle('set-config', (event, newConfig) => {
     fs.writeFileSync(configPath, JSON.stringify(newConfig));
+});
+
+ipcMain.handle('generate-pdf', async () => {
+    await generatePDF();
+});
+
+// Handle getting all songs
+ipcMain.handle('get-all-songs', async () => {
+    return new Promise((resolve, reject) => {
+        db.all("SELECT * FROM Musicas", (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+});
+
+// Handle updating a song
+ipcMain.handle('update-song', async (event, id, column, value) => {
+    return new Promise((resolve, reject) => {
+        db.run(`UPDATE Musicas SET ${column} = ? WHERE id = ?`, [value, id], (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
+});
+
+// Handle deleting a song
+ipcMain.handle('delete-song', async (event, id, filePath) => {
+    return new Promise((resolve, reject) => {
+        db.run(`DELETE FROM Musicas WHERE id = ?`, [id], (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                fs.unlink(path.join(__dirname, 'assets', 'musicas', filePath), (err) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve();
+                    }
+                });
+            }
+        });
+    });
+});
+
+// Handle closing the application
+ipcMain.handle('close-app', () => {
+    app.quit();
 });
 
 app.on('window-all-closed', () => {
