@@ -33,15 +33,34 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 async function handleInputChange(event) {
-    event.preventDefault(); // Prevent the default form submission behavior
+    event.preventDefault();
     const input = event.target;
     const id = input.dataset.id;
     const column = input.dataset.column;
     const value = input.value;
 
-    await window.electronAPI.updateSong(id, column, value);
+    // Special handling for 'caminho' column
+    if (column === 'caminho') {
+        const row = input.closest('tr');
+        const identificador = row.querySelector('input[data-column="identificador"]').value;
+        
+        try {
+            // Update both database and file
+            await window.electronAPI.updateSongWithFile(id, value, identificador);
+        } catch (error) {
+            console.error('Error updating file:', error);
+            // Revert the input value if there's an error
+            const songs = await window.electronAPI.getAllSongs();
+            const song = songs.find(s => s.id === parseInt(id));
+            input.value = song.caminho;
+            return;
+        }
+    } else {
+        // Normal update for other columns
+        await window.electronAPI.updateSong(id, column, value);
+    }
 
-    // Optionally, you can add a visual indicator to show the update was successful
+    // Visual feedback
     input.classList.add('updated');
     setTimeout(() => {
         input.classList.remove('updated');

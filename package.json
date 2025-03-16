@@ -13,7 +13,8 @@
     "populate-db": "node src/populateDb.js",
     "package-win": "electron-packager . --platform=win32 --arch=x64 --out=dist --overwrite --icon=src/assets/icons/canta-oke-logo.ico",
     "package-win-2": "npx @electron/packager . --platform=win32 --arch=x64 --out=dist --overwrite --icon=src/assets/icons/canta-oke-logo.ico --ignore=README.md",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "auto-download": "node src/scripts/download.js"
   },
   "dependencies": {
     "express": "^4.21.2",
@@ -21,7 +22,9 @@
     "pdfkit": "^0.16.0",
     "qrcode": "^1.5.4",
     "sqlite": "^5.1.1",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "ytdl-core": "npm:@distube/ytdl-core@^4.16.4",
+    "ytpl": "^2.3.0"
   },
   "devDependencies": {
     "@electron/packager": "^18.3.6",

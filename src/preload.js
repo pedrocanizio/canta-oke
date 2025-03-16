@@ -17,5 +17,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     updateSong: (id, column, value) => ipcRenderer.invoke('update-song', id, column, value),
     deleteSong: (id, filePath) => ipcRenderer.invoke('delete-song', id, filePath),
     getServerURL: () => ipcRenderer.invoke('get-server-url'), // Expose the server URL
-    generateQRCode: () => ipcRenderer.invoke('generate-qr-code') // Expose the QR code generation method
+    generateQRCode: () => ipcRenderer.invoke('generate-qr-code'), // Expose the QR code generation method
+    updateSongWithFile: (id, newFileName, identificador) => 
+        ipcRenderer.invoke('updateSongWithFile', id, newFileName, identificador),
 });

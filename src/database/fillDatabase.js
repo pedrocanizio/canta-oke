@@ -36,78 +36,96 @@ async function processFilesInFolder(folderPath) {
     const files = await fs.promises.readdir(folderPath);
     let identificadorLength = 0;
 
-
     const dbInical = await openDb();
     const musicasTable = await dbInical.get(`SELECT MAX(id) as maxId FROM Musicas`);
     identificadorLength = musicasTable.maxId || 0;
     dbInical.close();
 
+    // Process files sequentially
     for (const [index, file] of files.entries()) {
-
-        const db = await openDb();
-
-        // Check if the file name is present in the database
-        const isFileInDatabase = await db.get(
-            'SELECT COUNT(*) as count FROM Musicas WHERE caminho = ?',
-            [file]
-        );
-
-        if (isFileInDatabase.count > 0) {
-            // Skip the rest of the loop if the file is already in the database
-            db.close()
-            continue;
-        }
-        identificadorLength += 1;
-        const identificador = `${String(identificadorLength).padStart(6, '0')}`;
-        let fileInfo = await discoverFileInfo(cleanText(file));
-
-        if(!fileInfo){
-            console.error(`stopping loop because fileInfo was null`)
-            db.close();
+        console.log(`Processing file ${index + 1} of ${files.length}: ${file}`);
+        const result = await processFile(file, folderPath, index, identificadorLength);
+        
+        if (!result.shouldContinue) {
+            console.log('Processing stopped due to an error');
             break;
         }
-
-        const fileExtension = path.extname(file);
-        const newFileName = `${identificador} - ${fileInfo.song.trim()} - ${fileInfo.artist.trim()}${fileExtension}`;
-        const oldFilePath = path.join(folderPath, file);
-        const newFilePath = path.join(folderPath, newFileName);
-        fs.rename(oldFilePath, newFilePath, (err) => {
-            if (err) {
-                console.error('Error renaming file:', err);
-                return;
-            }
-            console.log(`Renamed: ${file} to ${newFileName}`);
-        });
-        console.log(`Index: ${index}, File: ${file}, Info: ${fileInfo}`);
-
-        // Insert or update database
-        const row = await db.get(`SELECT 1 FROM Musicas WHERE identificador = ?`, [identificador])
-        console.log(row)
-        if (row) {
-            db.run(`UPDATE Musicas SET nome = ?, artista = ?, caminho = ?, caminhoOriginal = ? WHERE identificador = ?`,
-                [fileInfo.song.trim(), fileInfo.artist.trim(), newFileName, file, identificador],
-                (err) => {
-                    if (err) {
-                        console.error('Error updating database:', err.message);
-                    } else {
-                        console.log(`Updated database: ${newFileName}`);
-                    }
-                });
-        } else {
-            db.run(`INSERT INTO Musicas (identificador, nome, artista, caminho, caminhoOriginal) VALUES (?, ?, ?, ?, ?)`,
-                [identificador, fileInfo.song.trim(), fileInfo.artist.trim(), newFileName, file],
-                (err) => {
-                    if (err) {
-                        console.error('Error inserting into database:', err.message);
-                    } else {
-                        console.log(`Inserted into database: ${newFileName}`);
-                    }
-                });
-        }
-        db.close()
+        
+        // Update the identificadorLength for the next iteration
+        identificadorLength = result.identificadorLength;
     }
+    
+    console.log('Finished processing all files');
 }
+async function processFile(file, folderPath, index, identificadorLength) {
+    const db = await openDb();
 
+    // Check if the file name is present in the database
+    const isFileInDatabase = await db.get(
+        'SELECT COUNT(*) as count FROM Musicas WHERE caminho = ?',
+        [file]
+    );
+
+    if (isFileInDatabase.count > 0) {
+        // Skip processing if file is already in database
+        db.close();
+        return { shouldContinue: true, identificadorLength };
+    }
+
+    identificadorLength += 1;
+    const identificador = `${String(identificadorLength).padStart(6, '0')}`;
+    let fileInfo = await discoverFileInfo(cleanText(file));
+
+    if (!fileInfo) {
+        console.error(`stopping loop because fileInfo was null`);
+        db.close();
+        return Promise.resolve({ shouldContinue: false, identificadorLength });
+    }
+
+    const fileExtension = path.extname(file);
+    const newFileName = `${identificador} - ${fileInfo.song.trim()} - ${fileInfo.artist.trim()}${fileExtension}`;
+    const oldFilePath = path.join(folderPath, file);
+    const newFilePath = path.join(folderPath, newFileName);
+
+    fs.rename(oldFilePath, newFilePath, (err) => {
+        if (err) {
+            console.error('Error renaming file:', err);
+            return;
+        }
+        console.log(`Renamed: ${file} to ${newFileName}`);
+    });
+
+    console.log(`Index: ${index}, File: ${file}, Info: ${fileInfo}`);
+
+    // Insert or update database
+    const row = await db.get(`SELECT 1 FROM Musicas WHERE identificador = ?`, [identificador]);
+    console.log(row);
+
+    if (row) {
+        db.run(`UPDATE Musicas SET nome = ?, artista = ?, caminho = ?, caminhoOriginal = ? WHERE identificador = ?`,
+            [fileInfo.song.trim(), fileInfo.artist.trim(), newFileName, file, identificador],
+            (err) => {
+                if (err) {
+                    console.error('Error updating database:', err.message);
+                } else {
+                    console.log(`Updated database: ${newFileName}`);
+                }
+            });
+    } else {
+        db.run(`INSERT INTO Musicas (identificador, nome, artista, caminho, caminhoOriginal) VALUES (?, ?, ?, ?, ?)`,
+            [identificador, fileInfo.song.trim(), fileInfo.artist.trim(), newFileName, file],
+            (err) => {
+                if (err) {
+                    console.error('Error inserting into database:', err.message);
+                } else {
+                    console.log(`Inserted into database: ${newFileName}`);
+                }
+            });
+    }
+
+    db.close();
+    return Promise.resolve({ shouldContinue: true, identificadorLength });
+}
 
 module.exports = { processFilesInFolder };
 
