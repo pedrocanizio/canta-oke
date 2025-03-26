@@ -20,4 +20,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
     generateQRCode: () => ipcRenderer.invoke('generate-qr-code'), // Expose the QR code generation method
     updateSongWithFile: (id, newFileName, identificador) => 
         ipcRenderer.invoke('updateSongWithFile', id, newFileName, identificador),
+    onUpdateSelectedSongs: (callback) => ipcRenderer.on('update-selected-songs', (event, song) => callback(song))
 });

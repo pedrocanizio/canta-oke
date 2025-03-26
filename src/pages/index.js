@@ -7,7 +7,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.addEventListener('keydown', handleKeydown);
     document.getElementById('search').focus();
 });
-
+// Add listener for songs added from mobile
+window.electronAPI.onUpdateSelectedSongs((song) => {
+    updateSelectedSongsList();
+});
 async function updateSelectedSongsList() {
     const selectedSongs = await window.electronAPI.getSelectedSongs();
     const selectedSongsListDiv = document.getElementById('selectedSongsList');

@@ -71,7 +71,7 @@ function createConfigWindow() {
 
 app.whenReady().then(() => {
     createWindow();
-    const serverURL = startServer(); // Start the server and get the URL
+    const serverURL = startServer(mainWindow,selectedSongs); // Start the server and get the URL
 
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
