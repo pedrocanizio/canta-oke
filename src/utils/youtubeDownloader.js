@@ -9,7 +9,7 @@ async function getPlaylistVideos(url) {
     try {
         // Check if URL is a playlist
         if (url.includes('playlist?list=')) {
-            const playlist = await ytpl(url);
+            const playlist = await ytpl(url, { limit: Infinity });
             return playlist.items.map(item => item.url);
         }
         // If not a playlist, return the single video URL
@@ -42,6 +42,13 @@ async function downloadVideos() {
         fs.mkdirSync(outputFolder, { recursive: true });
     }
 
+    // Create or read skipped files log
+    const skippedFilesPath = path.join(__dirname, '..', 'assets', 'skipped-downloads.json');
+    let skippedFiles = {};
+    if (fs.existsSync(skippedFilesPath)) {
+        skippedFiles = JSON.parse(fs.readFileSync(skippedFilesPath, 'utf-8'));
+    }
+
     // Get existing files and database entries
     const existingFiles = fs.readdirSync(outputFolder);
     const existingDbFiles = await new Promise((resolve, reject) => {
@@ -53,19 +60,31 @@ async function downloadVideos() {
 
     // Download all videos
     for (const link of allLinks) {
+        // Check if link was previously skipped and not old enough to retry
+        if (skippedFiles[link]) {
+            console.log(`Skipping previously failed link: ${link}`);
+            continue;
+        }
+
         try {
             const info = await ytdl.getInfo(link);
             const videoTitleFormat = info.videoDetails.title.replace(/[^\w\s]/gi, '');
-            const videoTitle = info.videoDetails.title.replace(/[\\\/|]/g, '');
+            const videoTitle = info.videoDetails.title.replace(/[\\\/|":*?=–]/g, '');
             const outputPath = path.join(outputFolder, `${videoTitle}.mp4`);
 
             // Check if file exists in folder or database
             if (existingFiles.includes(`${videoTitle}.mp4`)) {
                 console.log(`Skipping: ${videoTitle} (file already exists in musicas folder)`);
+                // Record the skip time
+                skippedFiles[link] = Date.now();
+                fs.writeFileSync(skippedFilesPath, JSON.stringify(skippedFiles, null, 2));
                 continue;
             }
             if (existingDbFiles.includes(`${videoTitle}.mp4`)) {
                 console.log(`Skipping: ${videoTitle} (file already registered in database)`);
+                // Record the skip time
+                skippedFiles[link] = Date.now();
+                fs.writeFileSync(skippedFilesPath, JSON.stringify(skippedFiles, null, 2));
                 continue;
             }
 

@@ -30,30 +30,27 @@ let configWindow;
 let tray;
 let selectedSongs = [];
 
-function createWindow() {
-    mainWindow = new BrowserWindow({
-        width: 1792,
-        height: 1024,
-        fullscreen: true,  // Enables fullscreen mode
-        frame: false,      // Removes the upper bar (title bar)
-        icon: path.join(__dirname, 'assets/icons/canta-oke-logo.ico'), // Set the window icon
-        webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
-            nodeIntegration: false,
-            contextIsolation: true,
-        },
-    });
+const createWindow = () => {
+  mainWindow = new BrowserWindow({
+    fullscreen: true,
+    frame: false,
+    icon: path.join(__dirname, '..', 'assets', 'icons', 'win', 'circular_toolbar_icon.ico'),
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: true,
+      preload: path.join(__dirname, 'preload.js')
+    }
+  });
+  mainWindow.loadFile('src/pages/landing.html'); // Load the landing page
+  if (process.env.NODE_ENV === 'development') mainWindow.webContents.openDevTools(); // Uncomment to open DevTools
 
-    mainWindow.loadFile('src/pages/landing.html'); // Load the landing page
-    if (process.env.NODE_ENV === 'development') mainWindow.webContents.openDevTools(); // Uncomment to open DevTools
-
-    mainWindow.on('close', () => {
-        if (configWindow) {
-            configWindow.close();
-            configWindow = null;
-        }
-        app.quit();
-    });
+  mainWindow.on('close', () => {
+    if (configWindow) {
+      configWindow.close();
+      configWindow = null;
+    }
+    app.quit();
+  });
 }
 
 function createConfigWindow() {
@@ -61,7 +58,7 @@ function createConfigWindow() {
         width: 400,
         height: 300,
         frame: false, // Remove the toolbar
-        icon: path.join(__dirname, 'assets/icons/canta-oke-logo.ico'), // Set the window icon
+        icon: path.join(__dirname, 'assets/icons/win/icon.ico'), // Set the window icon
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: false,

@@ -132,3 +132,5 @@ distFull
 
 src/assets/
 src/database/music.db
+src/database/music.db-shm
+src/database/music.db-wal

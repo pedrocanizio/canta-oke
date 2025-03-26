@@ -10,7 +10,7 @@ let ollama = new Ollama({
 
 async function discoverFileInfo(fileName) {
     const response = await ollama.chat({
-        model: 'llama3.2:latest',
+        model: 'gemma3:1b',
         messages: [{
             role: 'user', content: `I need you to return your response on the distinct fromat "[artist name]||[song name]".
       If you cant find the file name infer it.

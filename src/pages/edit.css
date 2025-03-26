@@ -2,20 +2,19 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    height: 100vh;
+    padding: 20px;
+    min-height: 100vh;
     margin: 0;
     background-color: #452155;
     color: white;
-}
-
-h1 {
-    margin-bottom: 20px;
+    overflow-y: auto;
 }
 
 #tableContainer {
-    width: 80%;
-    overflow-x: auto;
+    width: 95%;
+    height: calc(100vh - 200px);
+    overflow: auto;
+    margin: 20px 0;
 }
 
 table {
@@ -23,7 +22,16 @@ table {
     border-collapse: collapse;
     background-color: rgba(0, 0, 0, 0.7);
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+    table-layout: fixed;
 }
+
+.col-acoes { width: 5%; }
+.col-id { width: 3%; }
+.col-identificador { width: 8%; }
+.col-artista { width: 15%; }
+.col-nome { width: 15%; }
+.col-caminho { width: 15%; }
+.col-caminho-original { width: 35%; }
 
 th,
 td {
@@ -66,4 +74,20 @@ input.updated {
 
 .back-button:hover {
     background-color: #5aa3c1;
+}
+
+
+/* Add after the existing table styles */
+.col-identificador {
+    width: 80px;
+}
+
+.col-caminho-original {
+    width: 300px;
+}
+
+td input {
+    width: 100%;
+    min-width: 50px;
+    box-sizing: border-box;
 }

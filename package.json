@@ -11,8 +11,8 @@
     "start": "electron .",
     "start:dev": "cross-env NODE_ENV=development electron .",
     "populate-db": "node src/populateDb.js",
-    "package-win": "electron-packager . --platform=win32 --arch=x64 --out=dist --overwrite --icon=src/assets/icons/canta-oke-logo.ico",
-    "package-win-2": "npx @electron/packager . --platform=win32 --arch=x64 --out=dist --overwrite --icon=src/assets/icons/canta-oke-logo.ico --ignore=README.md",
+    "package-win": "electron-packager . --platform=win32 --arch=x64 --out=dist --overwrite --icon=src/assets/icons/win/icon.ico",
+    "package-win-2": "npx @electron/packager . --platform=win32 --arch=x64 --out=dist --overwrite --icon=src/assets/icons/win/icon.ico --ignore=README.md",
     "dist": "electron-builder",
     "auto-download": "node src/scripts/download.js"
   },
@@ -23,7 +23,7 @@
     "qrcode": "^1.5.4",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
-    "ytdl-core": "npm:@distube/ytdl-core@^4.16.4",
+    "ytdl-core": "npm:@distube/ytdl-core@^4.16.5",
     "ytpl": "^2.3.0"
   },
   "devDependencies": {
@@ -32,7 +32,8 @@
     "cross-env": "^7.0.3",
     "electron": "^34.0.2",
     "electron-builder": "^24.13.3",
-    "electron-packager": "^17.1.2"
+    "electron-packager": "^17.1.2",
+    "electron-reload": "^2.0.0-alpha.1"
   },
   "build": {
     "npmRebuild": true,
@@ -40,7 +41,7 @@
     "productName": "CantaOke",
     "win": {
       "target": "nsis",
-      "icon": "src/assets/icons/canta-oke-logo.ico"
+      "icon": "assets/icons/win/circular_toolbar_icon.ico"
     },
     "directories": {
       "output": "distFull"
