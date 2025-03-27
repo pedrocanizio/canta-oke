@@ -10,7 +10,7 @@ async function getPlaylistVideos(url) {
         // Check if URL is a playlist
         if (url.includes('playlist?list=')) {
             const playlist = await ytpl(url, { limit: Infinity });
-            return playlist.items.map(item => item.url);
+            return playlist.items.map(item => item.shortUrl);
         }
         // If not a playlist, return the single video URL
         return [url];
@@ -59,7 +59,7 @@ async function downloadVideos() {
     });
 
     // Download all videos
-    for (const link of allLinks) {
+    for (let link of allLinks) {
         // Check if link was previously skipped and not old enough to retry
         if (skippedFiles[link]) {
             console.log(`Skipping previously failed link: ${link}`);
