@@ -37,8 +37,10 @@ async function processFilesInFolder(folderPath) {
     let identificadorLength = 0;
 
     const dbInical = await openDb();
-    const musicasTable = await dbInical.get(`SELECT MAX(id) as maxId FROM Musicas`);
-    identificadorLength = musicasTable.maxId || 0;
+    // Get the maximum identificador value instead of id
+    const musicasTable = await dbInical.get(`SELECT MAX(identificador) as maxIdentificador FROM Musicas`);
+    // Convert the string identificador to a number by removing leading zeros
+    identificadorLength = musicasTable.maxIdentificador ? parseInt(musicasTable.maxIdentificador, 10) : 0;
     dbInical.close();
 
     // Process files sequentially
