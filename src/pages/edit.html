@@ -10,11 +10,11 @@
 </head>
 
 <body>
-    <div>
+    <div class="header-container">
+        <h1>Editar Dados</h1>
         <button onclick="navigateTo('landing')" class="back-button">Voltar</button>
     </div>
-    <h1>Editar Dados</h1>
-    <div>
+    <div class="controls-container">
         <input type="text" id="searchInput" placeholder="Pesquisar por Identificador" oninput="filterTable()">
         <label>
             <input type="checkbox" id="sortByArtist" onchange="reorderTable()" checked> Ordenar por Artista/Música
