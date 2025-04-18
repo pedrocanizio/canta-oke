@@ -10,24 +10,27 @@
 </head>
 
 <body>
-    <div>
+    <div class="header-container">
+        <h1>Editar Dados</h1>
         <button onclick="navigateTo('landing')" class="back-button">Voltar</button>
     </div>
-    <h1>Editar Dados</h1>
-    <div>
+    <div class="controls-container">
         <input type="text" id="searchInput" placeholder="Pesquisar por Identificador" oninput="filterTable()">
+        <label>
+            <input type="checkbox" id="sortByArtist" onchange="reorderTable()" checked> Ordenar por Artista/Música
+        </label>
     </div>
     <div id="tableContainer">
         <table id="editTable">
             <thead>
                 <tr>
-                    <th>Ações</th>
-                    <th>ID</th>
-                    <th>Identificador</th>
-                    <th>Artista</th>
-                    <th>Nome</th>
-                    <th>Caminho</th>
-                    <th>Caminho Original</th>
+                    <th class="col-acoes">Ações</th>
+                    <th class="col-id">ID</th>
+                    <th class="col-identificador">Identificador</th>
+                    <th class="col-artista">Artista</th>
+                    <th class="col-nome">Nome</th>
+                    <th class="col-caminho">Caminho</th>
+                    <th class="col-caminho-original">Caminho Original</th>
                 </tr>
             </thead>
             <tbody>
