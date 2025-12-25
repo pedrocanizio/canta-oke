@@ -122,8 +122,8 @@ app.get("/songs", (req, res) => {
             </head>
             <body>
                 <nav>
-                    <button class="active" onclick="navigateTo('songs')">Lista Completa 2</button>
-                    <button onclick="navigateTo('selected-songs')">Músicas Selecionadas 2</button>
+                    <button class="active" onclick="navigateTo('songs')">Lista Completa</button>
+                    <button onclick="navigateTo('selected-songs')">Músicas Selecionadas</button>
                     <button onclick="startPlaying()">Executar</button>
                 </nav>
                 <div id="notification" class="notification" style="display: none;">Música adicionada com sucesso!</div>

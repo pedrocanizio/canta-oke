@@ -12,28 +12,29 @@ body {
     gap: 20px;
 }
 
+/* Primary menu buttons */
 .menu button {
-    background-color: #6441A5;
-    border: 2px solid transparent;           /* smooth border for transitions */
-    color: white;
-    padding: 15px 30px;
-    font-size: 1.2em;
-    cursor: pointer;
-    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.12s ease;
-    border-radius: 5px;
+  background-color: #6441A5;
+  border: 2px solid transparent;
+  color: white;
+  padding: 15px 30px;
+  font-size: 1.2em;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.12s ease;
+  border-radius: 5px;
 }
 
 /* Hover state: slightly darker and lifted */
 .menu button:hover {
-    background-color: #4a247f;               /* darker purple for contrast */
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
-    transform: translateY(-2px);
+  background-color: #4a247f;               /* darker purple */
+  box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+  transform: translateY(-2px);
 }
 
 /* Focus for accessibility */
 .menu button:focus-visible {
-    outline: 3px solid rgba(255,255,255,0.12);
-    outline-offset: 2px;
+  outline: 3px solid rgba(255,255,255,0.12);
+  outline-offset: 2px;
 }
 
 /* Modal Styles */
@@ -74,19 +75,18 @@ body {
     cursor: pointer;
 }
 
+/* Match modal buttons for consistency */
 .config-button {
-    background-color: #6441A5;
-    border: none;
-    color: white;
-    padding: 10px 20px;
-    font-size: 1em;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    border-radius: 5px;
+  background-color: #6441A5;
+  border: 2px solid transparent;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  transition: background-color 0.2s ease, box-shadow 0.12s ease;
 }
-
 .config-button:hover {
-    background-color: #452155;
+  background-color: #4a247f;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.25);
 }
 
 form {
@@ -109,4 +109,17 @@ form input {
     padding: 0.5rem;
     border: 1px solid #ccc;
     border-radius: 5px;
+}
+
+.config-notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #2ecc71;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  z-index: 9999;
+  font-weight: 600;
 }

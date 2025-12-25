@@ -19,15 +19,29 @@ function closeConfigModal() {
 }
 
 document.getElementById('configForm').addEventListener('submit', (event) => {
-    event.preventDefault();
-    const newConfig = {
-        minScore: document.getElementById('minScore').value,
-        maxScore: document.getElementById('maxScore').value
-    };
-    window.electronAPI.setConfig(newConfig).then(() => {
-        alert('Configurações salvas!');
-        closeConfigModal();
-    });
+  event.preventDefault();
+  const newConfig = {
+    minScore: Number(document.getElementById('minScore').value),
+    maxScore: Number(document.getElementById('maxScore').value)
+  };
+
+  window.electronAPI.setConfig(newConfig).then(() => {
+    closeConfigModal();
+
+    // Non-blocking notification
+    const notif = document.createElement('div');
+    notif.className = 'config-notification';
+    notif.textContent = 'Configurações salvas!';
+    document.body.appendChild(notif);
+    setTimeout(() => notif.remove(), 2500);
+
+    // Restore focus so keyboard shortcuts continue to work
+    document.body.tabIndex = -1;
+    document.body.focus();
+  }).catch(err => {
+    console.error('Erro salvando config', err);
+    // optionally show a failure notification
+  });
 });
 
 function closeApp() {
