@@ -1,18 +1,18 @@
-const express = require('express');
-const http = require('http');
-const os = require('os');
-const { db } = require('./database/index'); // Import the database logic
+const express = require("express");
+const http = require("http");
+const os = require("os");
+const { db } = require("./database/index"); // Import the database logic
 
 function getLocalIP() {
-    const interfaces = os.networkInterfaces();
-    for (const iface of Object.values(interfaces)) {
-        for (const details of iface) {
-            if (details.family === 'IPv4' && !details.internal) {
-                return details.address;
-            }
-        }
+  const interfaces = os.networkInterfaces();
+  for (const iface of Object.values(interfaces)) {
+    for (const details of iface) {
+      if (details.family === "IPv4" && !details.internal) {
+        return details.address;
+      }
     }
-    return 'localhost';
+  }
+  return "localhost";
 }
 
 const app = express();
@@ -47,21 +47,23 @@ const commonStyles = `
 `;
 
 // Update /songs route
-app.get('/songs', (req, res) => {
-    db.all("SELECT * FROM Musicas", (err, songs) => {
-        if (err) {
-            res.status(500).send('Database error');
-            return;
-        }
-        let listaMusicas = songs
-        .slice() // Create a copy to avoid modifying the original array
-        .sort((a, b) => {
-            // First sort by artist name
-            const artistCompare = a.artista.localeCompare(b.artista, 'pt-BR');
-            // If artists are the same, sort by song name
-            return artistCompare !== 0 ? artistCompare : a.nome.localeCompare(b.nome, 'pt-BR');
-        });
-        const html = `
+app.get("/songs", (req, res) => {
+  db.all("SELECT * FROM Musicas", (err, songs) => {
+    if (err) {
+      res.status(500).send("Database error");
+      return;
+    }
+    let listaMusicas = songs
+      .slice() // Create a copy to avoid modifying the original array
+      .sort((a, b) => {
+        // First sort by artist name
+        const artistCompare = a.artista.localeCompare(b.artista, "pt-BR");
+        // If artists are the same, sort by song name
+        return artistCompare !== 0
+          ? artistCompare
+          : a.nome.localeCompare(b.nome, "pt-BR");
+      });
+    const html = `
             <!DOCTYPE html>
             <html>
             <head>
@@ -120,8 +122,9 @@ app.get('/songs', (req, res) => {
             </head>
             <body>
                 <nav>
-                    <button class="active" onclick="navigateTo('songs')">Lista Completa</button>
-                    <button onclick="navigateTo('selected-songs')">Músicas Selecionadas</button>
+                    <button class="active" onclick="navigateTo('songs')">Lista Completa 2</button>
+                    <button onclick="navigateTo('selected-songs')">Músicas Selecionadas 2</button>
+                    <button onclick="startPlaying()">Executar</button>
                 </nav>
                 <div id="notification" class="notification" style="display: none;">Música adicionada com sucesso!</div>
                 <table>
@@ -134,19 +137,26 @@ app.get('/songs', (req, res) => {
                         </tr>
                     </thead>
                     <tbody>
-                        ${listaMusicas.map(song => `
+                        ${listaMusicas
+                          .map(
+                            (song) => `
                             <tr>
                                 <td><button class="add-button" onclick="addSong('${song.id}')">Adicionar</button></td>
                                 <td>${song.identificador}</td>
                                 <td>${song.artista}</td>
                                 <td>${song.nome}</td>
                             </tr>
-                        `).join('')}
+                        `
+                          )
+                          .join("")}
                     </tbody>
                 </table>
                 <script>
                     function navigateTo(route) {
                         window.location.href = '/' + route;
+                    }
+                    async function startPlaying() {
+                        const response = await fetch('/start/');
                     }
                     async function addSong(id) {
                         try {
@@ -167,28 +177,32 @@ app.get('/songs', (req, res) => {
             </body>
             </html>
         `;
-        res.send(html);
-    });
+    res.send(html);
+  });
 });
 
 // Add new route to handle song addition
-app.get('/add-song/:id', (req, res) => {
-    const id = req.params.id;
-    db.get("SELECT * FROM Musicas WHERE id = ?", [id], (err, song) => {
-        if (err || !song) {
-            res.status(500).json({ error: 'Song not found' });
-            return;
-        }
-        songs.push(song);
-        // Send IPC message to main process
-        mainWindow.webContents.send('update-selected-songs', song);
-        
-        res.json(song);
-    });
+app.get("/add-song/:id", (req, res) => {
+  const id = req.params.id;
+  db.get("SELECT * FROM Musicas WHERE id = ?", [id], (err, song) => {
+    if (err || !song) {
+      res.status(500).json({ error: "Song not found" });
+      return;
+    }
+    songs.push(song);
+    // Send IPC message to main process
+    mainWindow.webContents.send("update-selected-songs", song);
+
+    res.json(song);
+  });
 });
 
-app.get('/selected-songs', (req, res) => {
-    const html = `
+app.get("/start", (req, res) => {
+  mainWindow.webContents.send("start-playing");
+});
+
+app.get("/selected-songs", (req, res) => {
+  const html = `
         <!DOCTYPE html>
         <html>
         <head>
@@ -238,6 +252,7 @@ app.get('/selected-songs', (req, res) => {
             <nav>
                 <button onclick="navigateTo('songs')">Lista Completa</button>
                 <button class="active" onclick="navigateTo('selected-songs')">Músicas Selecionadas</button>
+                <button onclick="startPlaying()">Executar</button>
             </nav>
             <div id="notification" class="notification" style="display: none;">Música removida</div>
             <table>
@@ -251,7 +266,9 @@ app.get('/selected-songs', (req, res) => {
                     </tr>
                 </thead>
                 <tbody>
-                    ${songs.map((song, index) => `
+                    ${songs
+                      .map(
+                        (song, index) => `
                         <tr data-index="${index}">
                             <td>${index + 1}</td>
                             <td>${song.identificador}</td>
@@ -259,13 +276,19 @@ app.get('/selected-songs', (req, res) => {
                             <td>${song.nome}</td>
                             <td><button class="remove-button" onclick="removeSong(${index})">Remover</button></td>
                         </tr>
-                    `).join('')}
+                    `
+                      )
+                      .join("")}
                 </tbody>
             </table>
             <script>
                 let songs = ${JSON.stringify(songs)};
                 function navigateTo(route) {
                     window.location.href = '/' + route;
+                }
+                    
+                async function startPlaying() {
+                    const response = await fetch('/start/');
                 }
 
                 async function removeSong(index) {
@@ -316,20 +339,20 @@ app.get('/selected-songs', (req, res) => {
         </body>
         </html>
     `;
-    res.send(html);
+  res.send(html);
 });
 
 // Add new route to handle song removal
-app.get('/remove-selected-song/:index', (req, res) => {
-    const index = parseInt(req.params.index);
-    if (index >= 0 && index < songs.length) {
-        const removedSong = songs.splice(index, 1);
-        // Send IPC message to main process
-        mainWindow.webContents.send('update-selected-songs', songs);
-        res.status(200).send();
-    } else {
-        res.status(400).json({ error: 'Invalid index' });
-    }
+app.get("/remove-selected-song/:index", (req, res) => {
+  const index = parseInt(req.params.index);
+  if (index >= 0 && index < songs.length) {
+    const removedSong = songs.splice(index, 1);
+    // Send IPC message to main process
+    mainWindow.webContents.send("update-selected-songs", songs);
+    res.status(200).send();
+  } else {
+    res.status(400).json({ error: "Invalid index" });
+  }
 });
 
 const PORT = 3000;
@@ -338,34 +361,35 @@ const serverURL = `http://${localIP}:${PORT}`;
 
 let mainWindow;
 let songs = [];
-function startServer(electronWindow,selectedSongs) {
-    server.listen(PORT, () => {
-        console.log(`Server running at ${serverURL}`);
-    });
-    mainWindow = electronWindow;
-    songs = selectedSongs
-    return serverURL;
+function startServer(electronWindow, selectedSongs) {
+  server.listen(PORT, () => {
+    console.log(`Server running at ${serverURL}`);
+  });
+  mainWindow = electronWindow;
+  songs = selectedSongs;
+  return serverURL;
 }
 
 module.exports = { startServer };
 
-
 // Nova rota com visualização em cards
-app.get('/songs2', (req, res) => {
-    db.all("SELECT * FROM Musicas", (err, songs) => {
-        if (err) {
-            res.status(500).send('Database error');
-            return;
-        }
-        let listaMusicas = songs
-        .slice() // Create a copy to avoid modifying the original array
-        .sort((a, b) => {
-            // First sort by artist name
-            const artistCompare = a.artista.localeCompare(b.artista, 'pt-BR');
-            // If artists are the same, sort by song name
-            return artistCompare !== 0 ? artistCompare : a.nome.localeCompare(b.nome, 'pt-BR');
-        });
-        const html = `
+app.get("/songs2", (req, res) => {
+  db.all("SELECT * FROM Musicas", (err, songs) => {
+    if (err) {
+      res.status(500).send("Database error");
+      return;
+    }
+    let listaMusicas = songs
+      .slice() // Create a copy to avoid modifying the original array
+      .sort((a, b) => {
+        // First sort by artist name
+        const artistCompare = a.artista.localeCompare(b.artista, "pt-BR");
+        // If artists are the same, sort by song name
+        return artistCompare !== 0
+          ? artistCompare
+          : a.nome.localeCompare(b.nome, "pt-BR");
+      });
+    const html = `
             <!DOCTYPE html>
             <html>
             <head>
@@ -479,14 +503,20 @@ app.get('/songs2', (req, res) => {
                 </div>
                 
                 <div class="card-container" id="cardContainer">
-                    ${listaMusicas.map(song => `
+                    ${listaMusicas
+                      .map(
+                        (song) => `
                         <div class="card" data-artist="${song.artista.toLowerCase()}" data-song="${song.nome.toLowerCase()}">
                             <div class="card-id">${song.identificador}</div>
                             <div class="card-artist">${song.artista}</div>
                             <div class="card-song">${song.nome}</div>
-                            <button class="add-button" onclick="addSong('${song.id}')">Adicionar</button>
+                            <button class="add-button" onclick="addSong('${
+                              song.id
+                            }')">Adicionar</button>
                         </div>
-                    `).join('')}
+                    `
+                      )
+                      .join("")}
                 </div>
                 
                 <div id="notification" class="notification">Música adicionada com sucesso!</div>
@@ -531,6 +561,6 @@ app.get('/songs2', (req, res) => {
             </body>
             </html>
         `;
-        res.send(html);
-    });
+    res.send(html);
+  });
 });
