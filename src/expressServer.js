@@ -446,7 +446,22 @@ function startServer(electronWindow, selectedSongs) {
   return serverURL;
 }
 
-module.exports = { startServer };
+// Graceful server stopper
+function stopServer() {
+  return new Promise((resolve) => {
+    if (!server || !server.listening) {
+      console.log("Express server not listening; nothing to stop.");
+      return resolve();
+    }
+    server.close((err) => {
+      if (err) console.error("Error closing server:", err);
+      else console.log("Express server closed.");
+      resolve();
+    });
+  });
+}
+
+module.exports = { startServer, stopServer };
 
 // Nova rota com visualização em cards
 app.get("/songs2", (req, res) => {

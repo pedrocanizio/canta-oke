@@ -3,7 +3,7 @@ const path = require("path");
 const QRCode = require("qrcode"); // Import the QRCode library
 const { db } = require("./database/index"); // Import the database logic
 const { generatePDF } = require("./generatePDF"); // Import the generatePDF function
-const { startServer } = require("./expressServer"); // Import the startServer function
+const { startServer, stopServer } = require("./expressServer"); // Import the server helpers
 
 const configPath = path.join(app.getPath("userData"), "config.json");
 
@@ -327,4 +327,33 @@ app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
   }
+});
+
+// Graceful shutdown: stop server and close DB before quitting.
+app.on("before-quit", async () => {
+  console.log("App quitting: stopping server and closing DB...");
+
+  try {
+    if (typeof stopServer === "function") {
+      await stopServer();
+    }
+  } catch (err) {
+    console.error("Error stopping server:", err);
+  }
+
+  if (db && typeof db.close === "function") {
+    await new Promise((resolve) => {
+      db.close((err) => {
+        if (err) console.error("Error closing DB:", err);
+        else console.log("Database closed.");
+        resolve();
+      });
+    });
+  }
+
+  // Fallback force exit para evitar hang
+  setTimeout(() => {
+    console.warn("Forcing app exit.");
+    app.exit(0);
+  }, 2000);
 });
