@@ -20,21 +20,35 @@ const server = http.createServer(app);
 
 // Update the styles in both routes
 const commonStyles = `
+    /* Menu fixo na parte inferior por padrão */
     nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
         display: flex;
-        justify-content: center;
-        margin: 20px 0;
-        gap: 10px;
+        justify-content: space-around;
+        gap: 6px;
+        padding: 8px 10px;
+        background-color: white;
+        box-shadow: 0 -6px 18px rgba(0,0,0,0.08);
+        z-index: 1000;
+        border-top: 1px solid rgba(0,0,0,0.06);
     }
+
     nav button {
-        padding: 10px 20px;
+        flex: 1;
+        padding: 12px 14px;
         border: 2px solid rgb(102, 51, 153);
         background-color: white;
         color: rgb(102, 51, 153);
-        border-radius: 5px;
+        border-radius: 8px;
         cursor: pointer;
-        font-weight: bold;
-        transition: all 0.3s ease;
+        font-weight: 700;
+        transition: all 0.2s ease;
+        font-size: 18px; /* Aumentado para melhor leitura */
+        line-height: 1.2;
+        margin: 0 6px;
     }
     nav button.active {
         background-color: rgb(102, 51, 153);
@@ -43,6 +57,60 @@ const commonStyles = `
     nav button:hover {
         background-color: rgb(102, 51, 153);
         color: white;
+    }
+
+    /* Espaço para o menu fixo (evita conteúdo escondido) */
+    body {
+        padding-bottom: 88px;
+    }
+
+    /* Notificação base: fixa acima do menu */
+    .notification {
+        position: fixed;
+        bottom: 96px;
+        right: 16px;
+        z-index: 1001;
+        animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        max-width: 90%;
+        box-sizing: border-box;
+        transform: translateZ(0);
+        /* visual (cor) preservada, posição fixa já definida em commonStyles */
+        background-color: #4CAF50;
+        color: white;
+        padding: 15px;
+        border-radius: 5px;
+    }
+
+    /* Mobile: menu fixo inferior (estilo app) */
+    @media (max-width: 600px) {
+        nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: 0;
+            padding: 8px 10px;
+            background-color: white;
+            box-shadow: 0 -6px 18px rgba(0,0,0,0.08);
+            justify-content: space-around;
+            gap: 6px;
+            z-index: 1000;
+            border-top: 1px solid rgba(0,0,0,0.06);
+        }
+        nav button {
+            flex: 1;
+            padding: 8px 10px;
+            font-size: 14px;
+            border-radius: 6px;
+            margin: 0 4px;
+        }
+        body {
+            padding-bottom: 80px; /* evita conteúdo escondido pelo menu */
+        }
+        .notification {
+            bottom: 88px; /* posiciona acima do menu fixo */
+            right: 16px;
+        }
     }
 `;
 
@@ -122,8 +190,8 @@ app.get("/songs", (req, res) => {
             </head>
             <body>
                 <nav>
-                    <button class="active" onclick="navigateTo('songs')">Lista Completa</button>
-                    <button onclick="navigateTo('selected-songs')">Músicas Selecionadas</button>
+                    <button class="active" onclick="navigateTo('songs')">Lista</button>
+                    <button onclick="navigateTo('selected-songs')">Selecionadas</button>
                     <button onclick="startPlaying()">Executar</button>
                 </nav>
                 <div id="notification" class="notification" style="display: none;">Música adicionada com sucesso!</div>
@@ -250,8 +318,8 @@ app.get("/selected-songs", (req, res) => {
         </head>
         <body>
             <nav>
-                <button onclick="navigateTo('songs')">Lista Completa</button>
-                <button class="active" onclick="navigateTo('selected-songs')">Músicas Selecionadas</button>
+                <button onclick="navigateTo('songs')">Lista</button>
+                <button class="active" onclick="navigateTo('selected-songs')">Selecionadas</button>
                 <button onclick="startPlaying()">Executar</button>
             </nav>
             <div id="notification" class="notification" style="display: none;">Música removida</div>
@@ -466,8 +534,6 @@ app.get("/songs2", (req, res) => {
                     }
                     .notification {
                         position: fixed;
-                        bottom: 20px;
-                        right: 20px;
                         background-color: #4CAF50;
                         color: white;
                         padding: 15px 20px;
@@ -501,9 +567,9 @@ app.get("/songs2", (req, res) => {
             </head>
             <body>
                 <nav>
-                    <button onclick="navigateTo('songs')">Lista Tabela</button>
-                    <button class="active" onclick="navigateTo('songs2')">Lista Cards</button>
+                    <button class="active" onclick="navigateTo('songs')">Lista</button>
                     <button onclick="navigateTo('selected-songs')">Selecionadas</button>
+                    <button onclick="startPlaying()">Executar</button>
                 </nav>
                 
                 <div class="search-container">
