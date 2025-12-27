@@ -1,58 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Landing Page</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="landing.css">
-</head>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="landing.css" />
+  </head>
 
-<body>
+  <body>
     <div class="menu">
-        <button onclick="navigateTo('index')">Karaoke</button>
-        <button onclick="openConfigModal()">Configurações</button>
-        <button onclick="downloadPDF()">Baixar Lista</button>
-        <button onclick="navigateTo('edit')">Editar Dados</button>
-        <button onclick="openQRCodeModal()">QR Code</button> <!-- New button for QR Code -->
-        <button onclick="closeApp()">Fechar Programa</button> <!-- Novo botão para fechar o programa -->
+      <button onclick="navigateTo('index')">Karaoke</button>
+      <button onclick="openConfigModal()">Configurações</button>
+      <button onclick="downloadPDF()">Baixar Lista</button>
+      <button onclick="navigateTo('edit')">Editar Dados</button>
+      <button onclick="openQRCodeModal()">QR Code</button>
+      <!-- New button for QR Code -->
+      <button onclick="navigateTo('shortcuts')">Atalhos</button>
+      <button onclick="closeApp()">Fechar Programa</button>
+      <!-- Novo botão para fechar o programa -->
     </div>
 
     <!-- Modal Structure -->
     <div id="configModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeConfigModal()">&times;</span>
-            <h1>Configurações</h1>
-            <form id="configForm">
-                <div>
-                    <label for="minScore">Min Score:</label>
-                    <input type="number" id="minScore" name="minScore">
-                </div>
-                <div>
-                    <label for="maxScore">Max Score:</label>
-                    <input type="number" id="maxScore" name="maxScore">
-                </div>
-                <div style="display: flex; justify-content: center; gap: 0.5rem;">
-                    <button type="submit" class="config-button">Save</button>
-                    <button type="button" id="closeButton" class="config-button"
-                        onclick="closeConfigModal()">Close</button>
-                </div>
-            </form>
-        </div>
+      <div class="modal-content">
+        <span class="close" onclick="closeConfigModal()">&times;</span>
+        <h1>Configurações</h1>
+        <form id="configForm">
+          <div>
+            <label for="minScore">Min Score:</label>
+            <input type="number" id="minScore" name="minScore" />
+          </div>
+          <div>
+            <label for="maxScore">Max Score:</label>
+            <input type="number" id="maxScore" name="maxScore" />
+          </div>
+          <div style="display: flex; justify-content: center; gap: 0.5rem">
+            <button type="submit" class="config-button">Save</button>
+            <button
+              type="button"
+              id="closeButton"
+              class="config-button"
+              onclick="closeConfigModal()"
+            >
+              Close
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <!-- QR Code Modal Structure -->
     <div id="qrCodeModal" class="modal">
-        <div class="modal-content" style="background-color: #333; color: #fff; border-radius: 10px; padding: 20px;">
-            <span class="close" onclick="closeQRCodeModal()">&times;</span>
-            <h1 style="text-align: center;">QR Code</h1>
-            <div id="qrCodeContainer" style="display: flex; justify-content: center; align-items: center; height: 200px;"></div>
-        </div>
+      <div
+        class="modal-content"
+        style="
+          background-color: #333;
+          color: #fff;
+          border-radius: 10px;
+          padding: 20px;
+        "
+      >
+        <span class="close" onclick="closeQRCodeModal()">&times;</span>
+        <h1 style="text-align: center">QR Code</h1>
+        <div
+          id="qrCodeContainer"
+          style="
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+          "
+        ></div>
+      </div>
     </div>
 
     <script src="renderer.js"></script>
     <script src="landing.js"></script>
-</body>
-
+  </body>
 </html>

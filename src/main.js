@@ -110,6 +110,12 @@ ipcMain.on("close-config-window", () => {
 
 const template = [
   {
+    label: "Atalhos",
+    click: () => {
+      if (mainWindow) mainWindow.loadFile("src/pages/shortcuts.html");
+    },
+  },
+  {
     label: "Configuracoes",
     click: () => {
       createConfigWindow();
@@ -144,6 +150,9 @@ ipcMain.on("navigate-to", (event, page) => {
       break;
     case "landing":
       filePath = "src/pages/landing.html";
+      break;
+    case "shortcuts":
+      filePath = "src/pages/shortcuts.html";
       break;
     default:
       filePath = "src/pages/index.html";
