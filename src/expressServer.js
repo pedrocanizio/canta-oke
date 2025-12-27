@@ -314,7 +314,15 @@ app.get("/selected-songs", (req, res) => {
                         // Restore the song if there was an error
                         songs.splice(index, 0, songData);
                         regenerateTable();
-                        alert('Erro ao remover música. Tente novamente.');
+                        const notification = document.getElementById('notification');
+                        if (notification) {
+                            notification.textContent = 'Erro ao remover música. Tente novamente.';
+                            notification.style.display = 'block';
+                            setTimeout(() => { notification.style.display = 'none'; }, 3000);
+                        } else {
+                            // fallback
+                            console.error('Erro ao remover música. Tente novamente.');
+                        }
                     }
                 }
                 

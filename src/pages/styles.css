@@ -134,3 +134,36 @@ video {
     object-position: center;
     /* Centers the video content */
 }
+
+/* Toast styles (non-blocking notifications) */
+.toast-container {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 9999;
+}
+
+.toast {
+    min-width: 200px;
+    max-width: 360px;
+    background: rgba(0,0,0,0.85);
+    color: #fff;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.toast--visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast--success { background: linear-gradient(90deg,#2e7d32,#43a047); }
+.toast--error { background: linear-gradient(90deg,#c62828,#ef5350); }
+.toast--info { background: rgba(0,0,0,0.85); }

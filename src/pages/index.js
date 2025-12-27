@@ -106,7 +106,7 @@ function addCurrentSong() {
   const youtubeLink = document.getElementById("youtubeLink").value;
 
   if (!currentSong && !youtubeLink) {
-    alert("Nenhuma Música selecionada.");
+    showToast("Nenhuma Música selecionada.", "error");
     return;
   }
 
